@@ -1,0 +1,17 @@
+Package: funkySynth
+Type: Package
+Title: Functional Key Synthetic Control: FunKySynth
+Version: 0.1.0
+Author: Aaron B. Shev
+Maintainer: Aaron B. Shev <abshev@ucdavis.edu>
+Description: This humble package provides an implementation of Functional Key Synthetic Control (funkSynth).
+Imports:
+    fdapace,
+    Synth
+Suggests:
+	  ggplot2
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
