@@ -1,4 +1,4 @@
-#` Converts data frame into list format needed for funkySynth()
+#' Converts data frame into list format needed for funkySynth()
 
 listifyData = function(y, t, ut, it){
   ylistPre = lapply(unique(ut), lintifyData, y = y, t = t, ut = ut,
