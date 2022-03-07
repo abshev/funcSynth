@@ -1,4 +1,4 @@
-#` Function subsets data to a single list unit (lint)
+#' Function subsets data to a single list unit or "lint".
 
 lintifyData = function(u, y, t, ut, it, prepost, yt){
   if(prepost == "pre"){
