@@ -1,14 +1,18 @@
-#' Converts data frame into list format needed for funkySynth()
+#' Converts modular synth object into list format needed for FPCA()
 
-listifyData = function(y, t, ut, it){
-  ylistPre = lapply(unique(ut), lintifyData, y = y, t = t, ut = ut,
-                    it = it, prepost = "pre", yt = "y")
-  ylistPost = lapply(unique(ut), lintifyData, y = y, t = t, ut = ut,
-                     it = it, prepost = "post", yt = "y")
-  tlistPre = lapply(unique(ut), lintifyData, y = y, t = t, ut = ut,
-                    it = it, prepost = "pre", yt = "t")
-  tlistPost = lapply(unique(ut), lintifyData, y = y, t = t, ut = ut,
-                     it = it, prepost = "post", yt = "t")
+listifyData = function(mSynth){
+  ylistPre = lapply(unique(mSynth[,3]), lintifyData, y = mSynth[,1], 
+                    t = mSynth[,2], ut = mSynth[,3], it = mSynth[,4], 
+                    prepost = "pre", yt = "y")
+  ylistPost = lapply(unique(mSynth[,3]), lintifyData, y = mSynth[,1], 
+                     t = mSynth[,2], ut = mSynth[,3], it = mSynth[,4], 
+                     prepost = "post", yt = "y")
+  tlistPre = lapply(unique(mSynth[,3]), lintifyData, y = mSynth[,1], 
+                    t = mSynth[,2], ut = mSynth[,3], it = mSynth[,4], 
+                    prepost = "pre", yt = "t")
+  tlistPost = lapply(unique(mSynth[,3]), lintifyData, y = mSynth[,1], 
+                     t = mSynth[,2], ut = mSynth[,3], it = mSynth[,4], 
+                     prepost = "post", yt = "t")
   return(list(ylistPre = ylistPre, ylistPost = ylistPost,
               tlistPre = tlistPre, tlistPost = tlistPost))
 }
