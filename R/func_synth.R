@@ -22,12 +22,14 @@
 
 funcSynth = function(formula, data, covariateFunctions = "mean", cfArgs = NULL,
                      y = NULL, time = NULL, unit = NULL, intervention = NULL, 
-                     treated = NULL, x = NULL, ...){
+                     treated = NULL, x = NULL, V = NULL, ...){
   mCall <- match.call()
   mCallNoDots <- match.call(expand.dots = FALSE)
   # m <- match(x = c("formula", "data", "subset", "weights", "na.action", "offset"), 
   #            table = names(mf), nomatch = 0L)
   
+  #TODO I'm thinking it is best to move FPCA options to their own argument so
+  #       specify options separately for pre and post.
   matchedDots <- matchDots(list(...))
   
   #TODO Data checks  (these will now be done mostly in modularSyth function)
@@ -55,9 +57,8 @@ funcSynth = function(formula, data, covariateFunctions = "mean", cfArgs = NULL,
   
   treatedID <- which(unique(modFrm[[1]][,3]) %in% 
                        unique(modFrm[[1]][,3][modFrm[[1]][,5] == 1]))
-  interventionTime <- sum(intervention == FALSE) / length(unique(unit))
-  minTime <- min(modFrm[[1]][,2])
-  maxTime <- max(modFrm[[1]][,2])
+  # minTime <- min(modFrm[[1]][,2])
+  # maxTime <- max(modFrm[[1]][,2])
   
   
   listDat <- listifyData(modFrm[[1]])
@@ -71,18 +72,27 @@ funcSynth = function(formula, data, covariateFunctions = "mean", cfArgs = NULL,
   
   #TODO Add is additional arguments to covariate summary functions from cfArgs
   covMat <- buildCovariateMatrix(modFrm, covariateFunctions)
-  X1 <- rbind(matrix(t(xiPre)[, treatedID], ncol = length(treatedID)), 
-             matrix(covMat[, treatedID], ncol = length(treatedID))) 
-  X0 <- rbind(t(xiPre)[, -treatedID], covMat[, -treatedID])
-  V <- lambdaPre / sum(lambdaPre)
+  if(is.null(covMat)){
+    X1 <- matrix(t(xiPre)[, treatedID], ncol = length(treatedID))
+    X0 <- t(xiPre)[, -treatedID]
+  }
+  else{
+    X1 <- rbind(matrix(t(xiPre)[, treatedID], ncol = length(treatedID)), 
+                matrix(covMat[, treatedID], ncol = length(treatedID))) 
+    X0 <- rbind(t(xiPre)[, -treatedID], covMat[, -treatedID])
+  }
+  # V <- lambdaPre / sum(lambdaPre)
   
   #TODO What to do about V when we have covariates?
-  nLambda = length(V)
-  nCov = length(modFrm) - 1
-  V <- c(V * (nLambda/(nLambda + nCov)), rep(1/(nLambda + nCov), times = nCov))
+  # nLambda = length(V)
+  # nCov = length(modFrm) - 1
+  # V <- c(V * (nLambda/(nLambda + nCov)), rep(1/(nLambda + nCov), times = nCov))
   
   #TODO add additional arguments for optimization (maybe using ...?)
-  w <- solveForWeights(X0, X1, V)
+  wV <- solveForWeights(X0, X1, V, Z0 = fpcaDatPre[,-treatedID],
+                       Z1 = fpcaDatPre[,treatedID])
+  w <- wV$w
+  V <- wV$V
   
   fpcaPost <- FPCA(listDat$ylistPost, listDat$tlistPost, 
                    matchedDots$fpcaOptions)
@@ -90,17 +100,27 @@ funcSynth = function(formula, data, covariateFunctions = "mean", cfArgs = NULL,
   phiPost <- fpcaPost$phi
   muPost <- fpcaPost$mu
   fpcaDatPost <- phiPost %*% t(xiPost) + muPost
-  synthControl <- fpcaDatPost[, -treatedID] %*% w
-  # RMSEpre = sqrt(mean((fpcaDatPost[minTime:(interventionTime - 1), treatedID] - 
-  #                         synthControl[minTime:(interventionTime - 1)])^2))
-  # RMSEpost = sqrt(mean((fpcaDatPost[interventionTime:maxTime, treatedID] - 
-  #                          synthControl[interventionTime:maxTime])^2))
-  # ATE = mean(fpcaDatPost[interventionTime:maxTime, treatedID] -
-  #              synthControl[interventionTime:maxTime])
-  ATE <- mean(fpcaDatPost[, treatedID] - synthControl)
+  
+  
+  workGrid = c(fpcaPre$workGrid, fpcaPost$workGrid)
+  nPreGrid = length(fpcaPre$workGrid)
+  # nPostGrid = length(fpcaPost$workGrid)
+  preTimes = fpcaPre$obsGrid
+  postTimes = fpcaPost$obsGrid
+  
+  synthControl <- c(fpcaDatPre[, -treatedID] %*% w, fpcaDatPost[, -treatedID] %*% w)
+  fpcaControls <- rbind(fpcaDatPre[,-treatedID], fpcaDatPost[,-treatedID])
+  fpcaTreated <- c(fpcaDatPre[,treatedID], fpcaDatPost[,treatedID])
+  RMSEpreTypeI <- sqrt(mean((listDat$ylistPre[[treatedID]] - synthControl[workGrid %in% preTimes])^2))
+  RMSEpreTypeII <- sqrt(mean((fpcaTreated[1:nPreGrid] - synthControl[1:nPreGrid])^2))
+  MSPEpost <- sqrt(mean((listDat$ylistPost[[treatedID]] - synthControl[workGrid %in% postTimes])^2))
   #TODO create funkySynth class, also figure out what stats we should return
   
   return(list(#RMSEpre = RMSEpre, RMSEpost = RMSEpost, 
-    ATE = ATE, w = w, 
-    sytheticControl = synthControl, functionalData = fpcaDatPost))
+    MSPEpost = MSPEpost, weights = w, V = V, call = mCall, data = data,
+    RMSE = c(RMSEtypeI = RMSEpreTypeI, RMSEtypeII = RMSEpreTypeII),
+    sytheticControl = synthControl, 
+    functionalTreated = fpcaTreated,
+    functionalControls = fpcaControls,
+    fpca = list(pre = fpcaPre, post = fpcaPost)))
 }
