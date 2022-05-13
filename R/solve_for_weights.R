@@ -1,6 +1,6 @@
-#' Find SCM weights using quadratic optimization
+#' Function that returns weights and determins V matrix if it is not supplied
 #'
-#' @importFrom kernlab ipop
+
 
 solveForWeights = function(X0, X1, Z0 = NULL, Z1 = NULL, V, margin.ipop = 5e-04, 
                            sigf.ipop = 5, bound.ipop = 10, 
@@ -64,7 +64,10 @@ solveForWeights = function(X0, X1, Z0 = NULL, Z1 = NULL, V, margin.ipop = 5e-04,
     #     rgV.optim <- rgV.optim.2
     #   }
     # }
-    V <- abs(rgV.optim$par)/sum(abs(rgV.optim$par))
+    # V <- abs(rgV.optim$par)/sum(abs(rgV.optim$par))
+    V <- rgV.optim$par
+    V[V < 0] = 0
+    V <- V / sum(V)
     w <- optimizeWeights(X0, X1, V, margin.ipop, sigf.ipop, bound.ipop)
     return(list(V = V, w = w))
   }

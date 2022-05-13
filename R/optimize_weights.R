@@ -1,4 +1,6 @@
-
+#' Find SCM weights using quadratic optimization
+#'
+#' @importFrom kernlab ipop
 
 optimizeWeights = function(X0, X1, V, margin.ipop = 5e-04, sigf.ipop = 5,
                            bound.ipop = 10){
