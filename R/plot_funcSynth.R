@@ -72,6 +72,6 @@ plot.funcSynth <- function(object,...){
 }
 
 
-plot(test)
+#plot(test)
 
 
