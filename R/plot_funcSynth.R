@@ -20,8 +20,7 @@ plot.funcSynth <- function(object,...){
 
   intBegin <- min(get(as.character(time), object$data)[as.logical(get(as.character(intervention), object$data))])
 
-  browser()
-  
+ 
   toPlot <- as.data.frame(object$data)
   toPlot$.treated_color <- factor(as.logical(toPlot[[trt]]), levels = c(TRUE, FALSE), labels = c("Treated", "Donor Pool"))
   synthPlot <- toPlot[which(toPlot[[trt]]), ]
@@ -34,8 +33,8 @@ plot.funcSynth <- function(object,...){
   
   wholePlot <-
   ggplot(toPlot, aes_(y = y, x = time, group = unit, color = ~.treated_color))+
-    geom_line(data = toPlot[-which(toPlot$treated), ], alpha = .5, size = 1)+
-    geom_line(data = toPlot[which(toPlot$treated), ], size = 1)+
+    geom_line(data = toPlot[-which(toPlot[[trt]]), ], alpha = .5, size = 1)+
+    geom_line(data = toPlot[which(toPlot[[trt]]), ], size = 1)+
     geom_vline(xintercept = intBegin, linetype = 2)+
     annotate("text", y = y_rng[2], x = intBegin, label = " - Intervention", vjust = "bottom", hjust = "outward")+
     geom_line(data = synthPlot, size = 1)+
@@ -49,7 +48,7 @@ plot.funcSynth <- function(object,...){
     theme(panel.border = element_blank())
   
   toGapPlot <- within(
-    cbind(object$data[which(object$data[[treated]]) , c(as.character(time), as.character(y))],
+    cbind(object$data[which(object$data[[trt]]) , c(as.character(time), as.character(y))],
           ci$gap,
           object["functionalTreated"]),
     {  
