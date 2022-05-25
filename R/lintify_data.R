@@ -1,4 +1,13 @@
 #' Function subsets data to a single list unit or "lint".
+#' 
+#' @param u unit to subset
+#' @param y outcome variable
+#' @param t time variable
+#' @param ut unit variable
+#' @param it intervention variable
+#' @param prepost pre or post intervention
+#' @param yt selects where to make a list unit for outcome or time
+
 
 lintifyData = function(u, y, t, ut, it, prepost, yt){
   if(prepost == "pre"){

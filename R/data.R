@@ -1,0 +1,17 @@
+#' Cigarette sales
+#'
+#' Data used in the Abadie et al. (2010) analysis of a cigarette tax in 
+#' California called Proposition 99.
+#'
+#' @format A data frame with 1209 rows and 7 variables:
+#' \describe{
+#'   \item{state}{state FIPS number}
+#'   \item{year}{year of data}
+#'   \item{cigsale}{cigarette sale per capita (in packs)}
+#'   \item{lnincome}{log state per capita gdp}
+#'   \item{beer}{beer consumption per capita}
+#'   \item{age15to24}{percent of state population aged 15-24 years}
+#'   \item{retprice}{retail price of cigarettes}
+#' }
+#' @source \url{http://economics.mit.edu/files/11859}
+"smoking"

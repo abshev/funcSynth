@@ -25,7 +25,7 @@ funcSynth = function(formula, data, covariateFunctions = "mean", cfArgs = NULL,
                      fpcaOptions = list(pre = list(), post = list()),
                      alpha = 0.05,
                      y = NULL, time = NULL, unit = NULL, intervention = NULL, 
-                     treated = NULL, x = NULL, V = NULL, ...){
+                     treated = NULL, x = NULL, V = c("minMSE", "VFE"), ...){
   mCall <- match.call()
   mCallNoDots <- match.call(expand.dots = FALSE)
   # m <- match(x = c("formula", "data", "subset", "weights", "na.action", "offset"), 
@@ -96,7 +96,7 @@ funcSynth = function(formula, data, covariateFunctions = "mean", cfArgs = NULL,
   
   #TODO add additional arguments for optimization (maybe using ...?)
   wV <- solveForWeights(X0, X1, V, Z0 = fpcaDatPre[,-treatedID],
-                       Z1 = fpcaDatPre[,treatedID])
+                       Z1 = fpcaDatPre[,treatedID], lambda = fpcaPre$lambda)
   w <- wV$w
   V <- wV$V
   
