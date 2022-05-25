@@ -1,15 +1,17 @@
-Package: funkySynth
+Package: funcSynth
 Type: Package
-Title: Functional Key Synthetic Control: FunKySynth
-Version: 0.1.0
-Author: Aaron B. Shev
+Title: Functional Synthetic Control Method: funcSynth
+Version: 0.2.0
+Author: Aaron B. Shev, Chris D. McCort
 Maintainer: Aaron B. Shev <abshev@ucdavis.edu>
-Description: This humble package provides an implementation of Functional Key Synthetic Control (funkSynth).
+Description: Implements the functional synthetic control method.
 Imports:
     fdapace,
-    Synth
-Suggests:
-	  ggplot2
+    kernlab,
+    stats,
+    utils
+Exports: funcSynth, modularSynth, confint.funcSynth
+Depends: R (>= 3.5.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

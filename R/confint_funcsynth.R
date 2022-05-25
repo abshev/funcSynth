@@ -1,12 +1,22 @@
+#' Confidence interval method for funcSynth objects
+#' 
+#' @param funcSynthObj a functional synthetic control object
+#' @param confidence level of confidence for the interval
+#' @param type one (or both) of "syntheticControl", "gap". The former produces 
+#'             a confidence interval for the snythetic control estimate and
+#'             the latter produces a confidence interval for the effect
+#'             estimate.
 
 
 
-confint.funcSynth = function(funcSynthObj, alpha = 0.05, 
+
+confint.funcSynth = function(funcSynthObj, confidence = 0.95, 
                              type = c("syntheticControl", "gap")){
   if(any(!(type %in% c("syntheticControl", "gap")))){
     stop("Invalid confidence interval type")
   }
   
+  alpha <- 1 - confidence
   fpcaPre <- funcSynthObj$fpca$pre
   fpcaPost <- funcSynthObj$fpca$post
   w <- funcSynthObj$weights
