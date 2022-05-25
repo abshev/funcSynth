@@ -1,4 +1,6 @@
 #' Converts modular synth object into list format needed for FPCA()
+#' 
+#' @param mSynth a modular synth object
 
 listifyData = function(mSynth){
   ylistPre = lapply(unique(mSynth[,3]), lintifyData, y = mSynth[,1], 

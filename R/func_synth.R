@@ -1,31 +1,36 @@
 #' Functional Synthetic Control Method
 #'
-#' TODO documentation
 #' @param formula formula
 #' @param data data
-#' @param covariateFunctions
+#' @param covariateFunctions named list of function names for summarizing 
+#'                           covariates. List names should correspond to
+#'                           variable names.  Alternatively, instead of a list, 
+#'                           a single function may be supplied to be used on 
+#'                           all covariates.
 #' @param cfArgs arguments for the covariate summary function
 #' @param fpcaOptions options passed to FPCA()
+#' @param V Either a numeric vector or matrix, or one of "minMSE" for
+#'          automated selection of V or "FVE" for percent variation explained.
 #' @param y outcome
-#' @param t time
+#' @param time time
 #' @param unit unit
 #' @param intervention indicator for intervention
 #' @param treated indicator for treated
-#' @param data name of data object
+#' @param x covariates
+#' @param ... additional arguments passed to ipop() and optim().
+#' 
 #' @return funkySynth object
 #' 
 #' @details TODO
 #'
-#' @example 
-#' TODO Example code  
-#'
 #' @importFrom fdapace FPCA
+#' @export
 
 funcSynth = function(formula, data, covariateFunctions = "mean", cfArgs = NULL,
                      fpcaOptions = list(pre = list(), post = list()),
-                     alpha = 0.05,
+                     V = c("minMSE", "VFE"),
                      y = NULL, time = NULL, unit = NULL, intervention = NULL, 
-                     treated = NULL, x = NULL, V = NULL, ...){
+                     treated = NULL, x = NULL, ...){
   mCall <- match.call()
   mCallNoDots <- match.call(expand.dots = FALSE)
   # m <- match(x = c("formula", "data", "subset", "weights", "na.action", "offset"), 
@@ -96,7 +101,7 @@ funcSynth = function(formula, data, covariateFunctions = "mean", cfArgs = NULL,
   
   #TODO add additional arguments for optimization (maybe using ...?)
   wV <- solveForWeights(X0, X1, V, Z0 = fpcaDatPre[,-treatedID],
-                       Z1 = fpcaDatPre[,treatedID])
+                       Z1 = fpcaDatPre[,treatedID], lambda = fpcaPre$lambda)
   w <- wV$w
   V <- wV$V
   

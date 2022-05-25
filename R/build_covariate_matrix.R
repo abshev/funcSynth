@@ -1,4 +1,9 @@
 #' Summarizes and standardizes covariates into a matrix
+#' 
+#' @param modFrm model frame object
+#' @param covariateFunctions list of functions for summarizing covariates
+#' 
+#' @importFrom utils unstack
 
 buildCovariateMatrix = function(modFrm, covariateFunctions){
   covList <- lapply(modFrm[-1], function(x, id){
