@@ -8,7 +8,7 @@
 #' @param sigf.ipop Precision; passed to ipop()
 #' @param bound.ipop Clipping bound for the variables; passed to ipop()
 #'
-#' @importFrom kernlab ipop
+#' @importFrom kernlab ipop primal
 
 optimizeWeights = function(X0, X1, V, margin.ipop = 5e-04, sigf.ipop = 5,
                            bound.ipop = 10){

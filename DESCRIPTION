@@ -7,9 +7,11 @@ Maintainer: Aaron B. Shev <abshev@ucdavis.edu>
 Description: Implements the functional synthetic control method.
 Imports:
     fdapace,
-    ggplot2
-Suggests:
-	  
+    kernlab,
+    stats,
+    utils
+Exports: funcSynth, modularSynth, confint.funcSynth
+Depends: R (>= 3.5.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

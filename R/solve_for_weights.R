@@ -6,12 +6,15 @@
 #' @param Z1 Outcome matrix for the treatment
 #' @param V Matrix specificing importance of FPCA scores and covariates for
 #'          determining weights.
+#' @param lambda numeric vector of variances from FPCA
 #' @param margin.ipop how close we get to the constraints; passed to ipop()
 #' @param sigf.ipop Precision; passed to ipop()
 #' @param bound.ipop Clipping bound for the variables; passed to ipop()
 #' @param optimMethod One of "Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN",
 #'                    "Brent"; passed to optim().  See optim() for more 
 #'                    information.
+#'
+#' @importFrom stats optim
 
 
 solveForWeights = function(X0, X1, Z0 = NULL, Z1 = NULL, V, lambda = NULL,
