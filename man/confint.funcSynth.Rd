@@ -4,17 +4,19 @@
 \alias{confint.funcSynth}
 \title{Confidence interval method for funcSynth objects}
 \usage{
-\method{confint}{funcSynth}(funcSynthObj, confidence = 0.95, type = c("syntheticControl", "gap"))
+\method{confint}{funcSynth}(object, parm = c("syntheticControl", "gap"), level = 0.95, ...)
 }
 \arguments{
-\item{funcSynthObj}{a functional synthetic control object}
+\item{object}{a functional synthetic control object}
 
-\item{confidence}{level of confidence for the interval}
-
-\item{type}{one (or both) of "syntheticControl", "gap". The former produces
+\item{parm}{one (or both) of "syntheticControl", "gap". The former produces
 a confidence interval for the snythetic control estimate and
 the latter produces a confidence interval for the effect
 estimate.}
+
+\item{level}{level of confidence for the interval}
+
+\item{...}{not used}
 }
 \description{
 Confidence interval method for funcSynth objects

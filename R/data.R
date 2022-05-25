@@ -12,6 +12,8 @@
 #'   \item{beer}{beer consumption per capita}
 #'   \item{age15to24}{percent of state population aged 15-24 years}
 #'   \item{retprice}{retail price of cigarettes}
+#'   \item{prop99}{indicator for years Proposition 99 was in effect}
+#'   \item{california}{indicator for California}
 #' }
 #' @source \url{http://economics.mit.edu/files/11859}
 "smoking"

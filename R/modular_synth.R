@@ -8,6 +8,8 @@
 #'                     time.
 #' @param treated Binary or logical variable indicating if a unit is ever 
 #'                treated at any time.
+#'                
+#' @export
 
 
 #TODO add data argument.

@@ -1,16 +1,22 @@
-
+#' Generic plot method for funcSynth objects
+#'
+#' @param x a funcSynth object
+#' @param ... additional arguments passed to ggplot()
+#' 
+#' @import ggplot2
+#' @importFrom stats getCall
+#' 
+#' @method plot funcSynth
+#' @export
 
 # library(kernlab);library(fdapace); data("cigsales"); test <- funcSynth(modularSynth(y = cigsale, time =year, unit = fips, intervention = intervention, treated = treated)~retprice, data = cigsales)
 
 
-library(ggplot2)
+plot.funcSynth <- function(x,...){
 
-
-plot.funcSynth <- function(object,...){
-
-  if(!inherits(object, "funcSynth")) stop( "not a funcSynth object")
+  if(!inherits(x, "funcSynth")) stop( "not a funcSynth object")
   
-  objectCall <- getCall(object)
+  objectCall <- getCall(x)
 
   time <- objectCall[["formula"]][[2]][["time"]]
   y <- objectCall[["formula"]][[2]][["y"]]
@@ -18,15 +24,16 @@ plot.funcSynth <- function(object,...){
   intervention <- objectCall[["formula"]][[2]][["intervention"]]
   treated <-  objectCall[["formula"]][[2]][["treated"]]
 
-  intBegin <- min(get(as.character(time), object$data)[as.logical(get(as.character(intervention), object$data))])
+  intBegin <- min(get(as.character(time), x$data)[as.logical(get(as.character(intervention), x$data))])
 
-  toPlot <- object$data
+  toPlot <- x$data
   toPlot$.treated_color <- factor(as.logical(with(toPlot, treated)), levels = c(TRUE, FALSE), labels = c("Treated", "Donor Pool"))
   synthPlot <- toPlot[which(toPlot$treated), ]
   synthPlot$.treated_color <- "Func.Synth.Con."
-  synthPlot[[y]] <- object$syntheticControl
+  synthPlot[[y]] <- x$syntheticControl
   
-  ci <- confint(object)
+  ci <- confint.funcSynth(x)
+  cidat <- cbind(synthPlot, ci$syntheticControl)
   
   wholePlot <-
   
@@ -35,7 +42,8 @@ plot.funcSynth <- function(object,...){
     geom_line(data = toPlot[which(toPlot$treated), ], size = 1)+
     geom_vline(xintercept = intBegin, linetype = 2)+
     geom_line(data = synthPlot, size = 1)+
-    geom_ribbon(data = cbind(synthPlot, ci$syntheticControl), aes(ymin = CIlower.sc, ymax = CIupper.sc), fill = "blue", color = NA, alpha = .5)+
+    geom_ribbon(data = cidat, aes(ymin = cidat$CIlower.sc, ymax = cidat$CIupper.sc), 
+                fill = "blue", color = NA, alpha = .5)+
     scale_color_manual(NULL,values =  c("Treated" = "red", 
                                         "Donor Pool" = "grey30",
                                         "Func.Synth.Con." = "blue"))+
@@ -45,12 +53,12 @@ plot.funcSynth <- function(object,...){
     theme(panel.border = element_blank())
   
   toGapPlot <- within(
-    cbind(object$data[which(object$data[[treated]]) , c(as.character(time), as.character(y))],
+    cbind(x$data[which(x$data[[treated]]) , c(as.character(time), as.character(y))],
           ci$gap,
-          object["functionalTreated"]),
+          x["functionalTreated"]),
     {  
-      .syntheticControl <- object$syntheticControl
-      .functionalTreated <- object$functionalTreated
+      .syntheticControl <- x$syntheticControl
+      .functionalTreated <- x$functionalTreated
       .diff <- .functionalTreated - .syntheticControl
     })
   
