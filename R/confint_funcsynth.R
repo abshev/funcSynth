@@ -1,28 +1,31 @@
 #' Confidence interval method for funcSynth objects
 #' 
-#' @param funcSynthObj a functional synthetic control object
-#' @param confidence level of confidence for the interval
-#' @param type one (or both) of "syntheticControl", "gap". The former produces 
+#' @param object a functional synthetic control object
+#' @param parm one (or both) of "syntheticControl", "gap". The former produces 
 #'             a confidence interval for the snythetic control estimate and
 #'             the latter produces a confidence interval for the effect
 #'             estimate.
+#' @param level level of confidence for the interval
+#' @param ... not used
+#' @method confint funcSynth
+#' 
+#' @export
 
 
 
-
-confint.funcSynth = function(funcSynthObj, confidence = 0.95, 
-                             type = c("syntheticControl", "gap")){
-  if(any(!(type %in% c("syntheticControl", "gap")))){
+confint.funcSynth = function(object, parm = c("syntheticControl", "gap"),
+                             level = 0.95, ...){
+  if(any(!(parm %in% c("syntheticControl", "gap")))){
     stop("Invalid confidence interval type")
   }
   
-  alpha <- 1 - confidence
-  fpcaPre <- funcSynthObj$fpca$pre
-  fpcaPost <- funcSynthObj$fpca$post
-  w <- funcSynthObj$weights
-  treated <- funcSynthObj$treatedID
-  synthControl <- funcSynthObj$syntheticControl
-  treatedFunc <- funcSynthObj$functionalTreated
+  alpha <- 1 - level
+  fpcaPre <- object$fpca$pre
+  fpcaPost <- object$fpca$post
+  w <- object$weights
+  treated <- object$treatedID
+  synthControl <- object$syntheticControl
+  treatedFunc <- object$functionalTreated
   
   phiPre <- fpcaPre$phi
   phiPost <- fpcaPost$phi
@@ -65,7 +68,7 @@ confint.funcSynth = function(funcSynthObj, confidence = 0.95,
   Kpre <- nrow(fpcaPre$xiVar[[treated]])
   Kpost <- nrow(fpcaPost$xiVar[[treated]])
   
-  if("syntheticControl" %in% type){
+  if("syntheticControl" %in% parm){
     marginOfErrorPre <- sqrt(stats::qchisq(1 - alpha, Kpre) * varSynthPre)
     marginOfErrorPost <- sqrt(stats::qchisq(1 - alpha, Kpost) * varSynthPost)
     CIlower.sc = synthControl - c(marginOfErrorPre, marginOfErrorPost)
@@ -75,7 +78,7 @@ confint.funcSynth = function(funcSynthObj, confidence = 0.95,
   else{
     CI.sc = NULL
   }
-  if("gap" %in% type){
+  if("gap" %in% parm){
     marginOfErrorPre <- sqrt(stats::qchisq(1 - alpha, Kpre) * varGapPre)
     marginOfErrorPost <- sqrt(stats::qchisq(1 - alpha, Kpost) * varGapPost)
     CIlower.gp = (treatedFunc - synthControl) - 
@@ -87,8 +90,8 @@ confint.funcSynth = function(funcSynthObj, confidence = 0.95,
   else{
     CI.gp = NULL
   }
-  if(length(type) == 1){
-    out <- list(syntheticControl = CI.sc, gap = CI.gp)[[type]]
+  if(length(parm) == 1){
+    out <- list(syntheticControl = CI.sc, gap = CI.gp)[[parm]]
   }
   else{
     out <- list(syntheticControl = CI.sc, gap = CI.gp)

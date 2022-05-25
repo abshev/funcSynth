@@ -24,6 +24,7 @@
 #' @details TODO
 #'
 #' @importFrom fdapace FPCA
+#' @export
 
 funcSynth = function(formula, data, covariateFunctions = "mean", cfArgs = NULL,
                      fpcaOptions = list(pre = list(), post = list()),
