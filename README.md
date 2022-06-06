@@ -1,2 +1,2 @@
 # funcSynth
-R package implementing the Functional Key Synthetic Control Method
+R package implementing the Functional Synthetic Control Method
