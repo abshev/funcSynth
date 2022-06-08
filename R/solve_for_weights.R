@@ -83,13 +83,13 @@ solveForWeights = function(X0, X1, Z0 = NULL, Z1 = NULL, V, lambda = NULL,
       w <- optimizeWeights(X0, X1, V, margin.ipop, sigf.ipop, bound.ipop)
       return(list(V = V, w = w))
     }
-    else if(V[1] == "VFE"){
+    else if(V[1] == "FVE"){
       V <- lambda / sum(lambda)
       w <- optimizeWeights(X0, X1, V, margin.ipop, sigf.ipop, bound.ipop)
       return(list(V = V, w = w))
     }
     else{
-      stop("Invalid value for V.  Enter \"minMSE\", \"VFE\", or a numeric matrix")
+      stop("Invalid value for V.  Enter \"FVE\", \"minMSE\", or a numeric matrix")
     }
   }
   

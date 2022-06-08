@@ -28,9 +28,9 @@
 
 funcSynth = function(formula, data, covariateFunctions = "mean", cfArgs = NULL,
                      fpcaOptions = list(pre = list(), post = list()),
-                     V = c("minMSE", "VFE"),
+                     V = c("FVE", "minMSE"),
                      y = NULL, time = NULL, unit = NULL, intervention = NULL, 
-                     treated = NULL, x = NULL, ...){
+                     treated = NULL, x = NULL, na.action = na.pass, ...){
   mCall <- match.call()
   mCallNoDots <- match.call(expand.dots = FALSE)
   # m <- match(x = c("formula", "data", "subset", "weights", "na.action", "offset"), 
