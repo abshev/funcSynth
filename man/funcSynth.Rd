@@ -10,7 +10,7 @@ funcSynth(
   covariateFunctions = "mean",
   cfArgs = NULL,
   fpcaOptions = list(pre = list(), post = list()),
-  V = c("minMSE", "VFE"),
+  V = c("FVE", "minMSE"),
   y = NULL,
   time = NULL,
   unit = NULL,

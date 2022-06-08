@@ -1,7 +1,7 @@
 Package: funcSynth
 Type: Package
 Title: Functional Synthetic Control Method: funcSynth
-Version: 0.2.1
+Version: 0.2.2
 Author: Aaron B. Shev, Chris D. McCort
 Maintainer: Aaron B. Shev <abshev@ucdavis.edu>
 Description: Implements the functional synthetic control method.

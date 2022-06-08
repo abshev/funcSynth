@@ -11,7 +11,7 @@
 #'                
 #' @export
 
-
+#TODO order data by increasing time
 #TODO add data argument.
 modularSynth = function(y, time, unit, intervention, treated){
   if(!(is.numeric(y))){
